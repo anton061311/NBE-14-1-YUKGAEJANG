@@ -19,8 +19,7 @@
 
 ## 🏗️ 시스템 아키텍처
 
-<!-- IMAGE-SLOT: architecture-3d -->
-> 🖼️ 이미지 준비 중: `docs/img/architecture-3d.png`
+![Browser에서 Vercel의 Next.js, Railway의 Spring Boot(Controller, Service, BatchTimeWindowUtil, Repository, ExceptionHandler)를 거쳐 Database로 가는 아키텍처. 주황 테두리가 본인 담당](docs/img/architecture-3d.png)
 
 Controller–Service–Repository 계층으로 나누고, 주문 병합과 배송 구간 정책은 Service에, 매출 집계는 Repository의 JPQL에 두었습니다. 계층별 상세는 [아키텍처 문서](docs/ARCHITECTURE.md)에 있습니다.
 
