@@ -1,0 +1,49 @@
+{
+  "title": "cast로 H2와 MySQL에서 같은 쿼리가 동작한다",
+  "problem": {
+    "text": "MySQL DATE() 함수를 쓴 일별 매출 쿼리가 H2에서 실패했다"
+  },
+  "flow": {
+    "columns": [
+      "쿼리 표현",
+      "H2",
+      "H2 + MySQL"
+    ],
+    "lanes": [
+      {
+        "label": "수정 전",
+        "state": "DATE(orderDate)",
+        "action": {
+          "col": 2,
+          "text": "H2 실행",
+          "color": "red"
+        },
+        "result": {
+          "text": "DATE 함수 없음"
+        }
+      },
+      {
+        "label": "수정 후",
+        "state": "cast(…LocalDate)",
+        "action": {
+          "col": 3,
+          "text": "H2·MySQL 실행",
+          "color": "blue"
+        },
+        "result": {
+          "text": "둘 다 통과"
+        }
+      }
+    ],
+    "code": "SELECT cast(oi.order.orderDate as LocalDate) ... GROUP BY ...",
+    "caption": "Hibernate가 DB마다 맞는 날짜 변환 SQL을 만듭니다"
+  },
+  "choice": {
+    "text": "cast로 바꾸고 H2 Repository 테스트와 MySQL Testcontainers 테스트를 분리했다"
+  },
+  "verify": {
+    "text": "H2 4/4 · MySQL 8.4 1/1 통과 (2026-10-26)",
+    "source": "OrderItemRepository*Test"
+  },
+  "footer": "Grids & Circles"
+}

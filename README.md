@@ -56,12 +56,20 @@ Base URL `/api/v1` · 오류 응답은 모두 `{code, message, timestamp}` 형�
 
 - **문제**: 여러 상품 중 하나가 없을 때 앞에서 처리한 주문까지 실제 DB에서 롤백되는지는 Mockito로 증명할 수 없었습니다. `@SpringBootTest`를 추가했지만, 클래스 수준 `@Transactional` 때문에 서비스 트랜잭션이 테스트 트랜잭션에 합류해 롤백 시점이 가려졌습니다.
 - **선택**: 클래스 수준 트랜잭션을 지우고, 저장 확인이 필요한 테스트에만 메서드 수준으로 적용했습니다.
+<p align="center">
+  <img src="docs/img/ts-rollback-test-flow.png" alt="수정 전에는 서비스가 테스트 트랜잭션에 합류해 롤백이 테스트 끝으로 밀려 검증할 수 없고, 수정 후에는 서비스 트랜잭션이 예외 즉시 롤백되어 주문 0건을 확인하는 흐름" width="560">
+</p>
+
 - **검증**: 예외가 난 뒤 주문 데이터가 남지 않는 것을 `OrderServiceIntegrationTest`로 확인했습니다.
 
 ### 3. H2와 MySQL의 날짜 함수 차이
 
 - **문제**: 일별 매출 쿼리의 MySQL `DATE()` 함수가 H2에서 `Function "DATE" not found`로 실패했습니다.
 - **선택**: `cast(orderDate as LocalDate)`로 바꿔 Hibernate가 DB에 맞는 SQL을 만들게 하고, H2 Repository 테스트와 MySQL Testcontainers 테스트를 분리했습니다.
+<p align="center">
+  <img src="docs/img/ts-h2-mysql-date-flow.png" alt="수정 전 DATE(orderDate)는 H2에서 함수 없음으로 실패하고, 수정 후 cast(orderDate as LocalDate)는 H2와 MySQL에서 모두 통과하는 흐름" width="560">
+</p>
+
 - **검증**: 당시에는 Docker가 없어 MySQL 테스트가 건너뛰어졌습니다. 2026-10-26 재실행에서 `mysql:8.4` 컨테이너로 통과를 확인했습니다.
 
 ### 테스트 실행 결과

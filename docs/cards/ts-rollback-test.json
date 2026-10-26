@@ -1,0 +1,16 @@
+{
+  "title": "테스트 트랜잭션이 서비스 롤백을 가렸다",
+  "problem": {"text": "클래스 수준 @Transactional 때문에 서비스 트랜잭션이 테스트 트랜잭션에 합류해 롤백을 관찰할 수 없었다"},
+  "flow": {
+    "columns": ["주문 처리", "예외 시 롤백", "DB 확인"],
+    "lanes": [
+      {"label": "수정 전", "state": "테스트 Tx에 합류", "action": {"col": 3, "text": "테스트 끝에 롤백", "color": "red"}, "result": {"text": "검증 불가"}},
+      {"label": "수정 후", "state": "서비스 Tx 시작", "action": {"col": 2, "text": "예외 → 즉시 롤백", "color": "blue"}, "result": {"text": "주문 0건"}}
+    ],
+    "code": "@Transactional: 클래스 수준 → 필요한 테스트 메서드에만",
+    "caption": "서비스 트랜잭션 경계에서 롤백이 끝난 뒤 DB를 확인합니다"
+  },
+  "choice": {"text": "클래스 수준 트랜잭션을 지우고 저장 확인이 필요한 테스트에만 메서드 수준으로 적용했다"},
+  "verify": {"text": "상품 하나가 없으면 주문 데이터가 남지 않음", "source": "OrderServiceIntegrationTest"},
+  "footer": "Grids & Circles"
+}
